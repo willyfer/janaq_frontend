@@ -177,6 +177,22 @@ export default {
         "dni",
         "carnet extranjeria",
       ],
+      tipo_departamento: [
+        { text: "Seleccionar", value: null },
+        "lima",
+        "Trujillo",
+      ],
+      tipo_provincia: [
+        { text: "Seleccionar", value: null },
+        "Trujillo ",
+        "pataz",
+      ],
+      tipo_distrito: [
+        { text: "Seleccionar", value: null },
+        "miraflores",
+        "San isidro",
+        "Surquillo",
+      ],
       show: true,
     };
   },
