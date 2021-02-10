@@ -18,7 +18,11 @@
             type="email"
             placeholder="Ingrese email"
             required
+            :state="isEmailValid()"
           ></b-form-input>
+          <b-form-invalid-feedback id="input-live-feedback" v-if="isEmailValid">
+            Ingrese un email válido
+          </b-form-invalid-feedback>
         </b-form-group>
         <b-form-group
           id="input-group-2"
@@ -74,6 +78,14 @@ export default {
     };
   },
   methods: {
+    isEmailValid() {
+      let reg = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
+      return this.form.email == ""
+        ? null
+        : reg.test(this.form.email)
+        ? true
+        : false;
+    },
     saveToken(token) {
       localStorage.setItem("token", token);
     },

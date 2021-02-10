@@ -17,6 +17,7 @@
             v-model="form.name"
             placeholder="Ingrese name"
             required
+            :state="isNameValid()"
           ></b-form-input>
         </b-form-group>
         <b-form-group
@@ -31,7 +32,11 @@
             type="email"
             placeholder="Ingrese email"
             required
+            :state="isEmailValid()"
           ></b-form-input>
+          <b-form-invalid-feedback id="input-live-feedback" v-if="isEmailValid">
+            Ingrese un email válido
+          </b-form-invalid-feedback>
         </b-form-group>
         <b-form-group
           id="input-group-tipo_doc"
@@ -58,7 +63,13 @@
             type="number"
             placeholder="Ingrese documento"
             required
+            maxlength="15"
+            oninput="if(this.value.length >= this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+            :state="isdocValid()"
           ></b-form-input>
+          <b-form-invalid-feedback id="input-live-feedback" v-if="isdocValid">
+            Ingrese 15 numeros para el documento
+          </b-form-invalid-feedback>
         </b-form-group>
         <b-form-group
           id="input-group-pass"
@@ -72,7 +83,13 @@
             type="password"
             placeholder="Ingrese contraseña"
             required
+            maxlength="50"
+            :state="ispassValid()"
           ></b-form-input>
+          <b-form-invalid-feedback id="input-live-feedback" v-if="ispassValid">
+            La contraseña debe tener al menos una mayúscula, una minúscula, un
+            dígito, un caracterer especial y sin espacios (8-50)
+          </b-form-invalid-feedback>
         </b-form-group>
         <b-form-group
           id="input-group-fech"
@@ -98,13 +115,24 @@
             id="input-dir"
             v-model="form.dir"
             type="text"
-            placeholder="Ingrese email"
+            placeholder="Ingrese direccion"
             required
           ></b-form-input>
         </b-form-group>
-        <b-button type="submit" variant="primary">REGISTRAR</b-button>
+        <b-button
+          type="submit"
+          variant="primary"
+          :disabled="
+            !ispassValid() || !isdocValid() || !isEmailValid() || !ispassValid()
+          "
+          >REGISTRAR</b-button
+        >
+        <b-button type="reset" variant="outline-secondary" class="ml-2"
+          >Limpiar</b-button
+        >
         <br />
         <br />
+        {{ isdocValid() }}
         <router-link to="/login" class=" ">Iniciar Sesion</router-link>
       </b-form>
     </div>
@@ -134,6 +162,7 @@ export default {
       showAlert: false,
       dismissCountDown: 0,
       showDismissibleAlert: false,
+
       form: {
         email: "",
         name: "",
@@ -151,7 +180,41 @@ export default {
       show: true,
     };
   },
+
   methods: {
+    isEmailValid() {
+      let reg = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
+      return this.form.email == ""
+        ? null
+        : reg.test(this.form.email)
+        ? true
+        : false;
+    },
+    isNameValid() {
+      let reg = /^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]+[\s]*)+$/;
+      return this.form.name == ""
+        ? null
+        : reg.test(this.form.name)
+        ? true
+        : false;
+    },
+    isdocValid() {
+      let reg = /^[0-9]{15}?$/i;
+      return this.form.doc == ""
+        ? null
+        : reg.test(this.form.doc)
+        ? true
+        : false;
+    },
+    ispassValid() {
+      let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,50}$/;
+      return this.form.password == ""
+        ? null
+        : reg.test(this.form.password)
+        ? true
+        : false;
+    },
+
     clearData() {
       (this.form.email = ""),
         (this.form.name = ""),
@@ -238,12 +301,9 @@ export default {
     onReset(event) {
       event.preventDefault();
       // Reset our form values
-
-      //   this.show = false;
-      //   this.$nextTick(() => {
-      //     this.show = true;
-      //   });
+      this.clearData();
     },
   },
+  updated() {},
 };
 </script>
