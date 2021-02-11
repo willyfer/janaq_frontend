@@ -132,7 +132,7 @@
         >
         <br />
         <br />
-        {{ isdocValid() }}
+
         <router-link to="/login" class=" ">Iniciar Sesion</router-link>
       </b-form>
     </div>
@@ -298,6 +298,7 @@ export default {
               "Usuario registrado correctamente!",
               "success"
             );
+            self.sendEmail();
             self.clearData();
           });
         })
@@ -309,6 +310,33 @@ export default {
         });
     },
 
+    sendEmail() {
+      const formData = { email: this.form.email };
+      console.log(JSON.stringify(formData));
+      fetch("http://127.0.0.1:8000/api/auth/email", {
+        method: "post",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+        .then(function (response) {
+          if (response.status !== 200) {
+            console.log(
+              "Looks like there was a problem Status Code: " + response.status
+            );
+            return;
+          }
+
+          // Examine the text in the response
+          response.json().then(function (data) {
+            console.log("llegada", data);
+          });
+        })
+        .catch(function (err) {
+          console.log("Fetch Error :-S", err);
+        });
+    },
     onSubmit(event) {
       event.preventDefault();
       this.fechtData();
